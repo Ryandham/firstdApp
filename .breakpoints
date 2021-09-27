@@ -1,0 +1,20 @@
+{
+  "files": {
+    "src/App.js": [
+      {
+        "id": "96d30804-ffca-4775-bd63-f38a67ae051b",
+        "line": 130,
+        "version": 3191,
+        "index": 3506
+      }
+    ],
+    "src/utils/WavePortal.json": [
+      {
+        "id": "03039ee8-1f54-4685-9cec-4b5a1842d973",
+        "line": 37,
+        "version": 27,
+        "index": 7149
+      }
+    ]
+  }
+}
