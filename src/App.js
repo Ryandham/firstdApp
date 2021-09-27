@@ -8,7 +8,7 @@ export default function App() {
   // set var for currentAccount
   const [currentAccount, setCurrentAccount] = useState("");
   const [allWaves, setAllWaves] = useState([]);
-  const contractAddress = "0xa1eE4FE8378D31dd8C777eE300b40842Cb4Fbd92";
+  const contractAddress = "0x3031C4c76b9E09E39CF76cCe344a84FfE2418479";
 
   // run async function to check if a wallet is connected
   const checkIfWalletIsConnected = async () => {
@@ -126,6 +126,17 @@ export default function App() {
 
         // store data in react state
         setAllWaves(wavesCleaned);
+
+        // listen for emitter events!
+        wavePortalContract.on("NewWave", (from, timestamp, message) => {
+          console.log("NewWave", from, timestamp, message);
+
+          setAllWaves(prevState => [...prevState, {
+            address: from,
+            timestamp: new Date(timestamp=1000),
+            message: message
+          }]);
+        });
       } else {
         console.log("Ethereum object doesn't exist!")
       }
