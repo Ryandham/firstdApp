@@ -7,7 +7,8 @@ export default function App() {
 
   // set var for currentAccount
   const [currentAccount, setCurrentAccount] = useState("");
-  const contractAddress = "0x46C99C9C81734387F4c29f9c628aAc178D4DF979";
+  const [allWaves, setAllWaves] = useState([]);
+  const contractAddress = "0xa1eE4FE8378D31dd8C777eE300b40842Cb4Fbd92";
 
   // run async function to check if a wallet is connected
   const checkIfWalletIsConnected = async () => {
@@ -74,15 +75,14 @@ export default function App() {
         const waveportalContract = new ethers.Contract(contractAddress, waveportal.abi, signer);
 
         // here
-        console.log("test")
         let count = await waveportalContract.getTotalWaves();
 
         console.log("Retrieved total wave count...", count.toNumber());
 
         /*
         * Execute the actual wave from your smart contract
-        */
-        const waveTxn = await waveportalContract.wave();
+        */ 
+        const waveTxn = await waveportalContract.wave("this is a message");
         console.log("Mining...", waveTxn.hash);
 
         await waveTxn.wait();
@@ -95,6 +95,42 @@ export default function App() {
       }
     } catch (error) {
       console.log(error)
+    }
+  }
+
+  // get waves function
+  const getAllWaves = async () => {
+    try {
+      const { ethereum } = window;
+      if (ethereum) {
+        // get provider
+        // get signer
+        // call contract using address, abi and signer
+        const provider = new ethers.providers.Web3Provider(ethereum);
+        const signer = provider.getSigner();
+        const waveportalContract = new ethers.Contract(contractAddress, waveportal.abi, signer);
+
+        // call the function
+        const waves = await waveportalContract.getAllWaves();
+
+        // set var
+          // for each wave, push a new object to our wavescleaned model
+        let wavesCleaned = [];
+        waves.forEach(wave => {
+          wavesCleaned.push({
+            address: wave.waver,
+            timestamp: new Date(wave.timestamp * 1000),
+            message: wave.message
+          });
+        });
+
+        // store data in react state
+        setAllWaves(wavesCleaned);
+      } else {
+        console.log("Ethereum object doesn't exist!")
+      }
+    } catch (error) {
+      console.log(error);
     }
   }
 
@@ -126,7 +162,15 @@ export default function App() {
               Connect Wallet
             </button>
           )}
-        
+
+          {allWaves.map((wave, index) => {
+          return (
+            <div key={index} style={{ backgroundColor: "OldLace", marginTop: "16px", padding: "8px" }}>
+              <div>Address: {wave.address}</div>
+              <div>Time: {wave.timestamp.toString()}</div>
+              <div>Message: {wave.message}</div>
+            </div>)
+        })}
       </div>
     </div>
   );
